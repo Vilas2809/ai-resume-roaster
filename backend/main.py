@@ -11,7 +11,7 @@ app = FastAPI(title="AI Resume Roaster")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://ai-resume-roaster-iota.vercel.app/"],  # change this to your frontend URL in production
+    allow_origins=["https://ai-resume-roaster-iota.vercel.app"],  # change this to your frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
