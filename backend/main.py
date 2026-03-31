@@ -11,7 +11,9 @@ app = FastAPI(title="AI Resume Roaster")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://ai-resume-roaster-iota.vercel.app"],  # change this to your frontend URL in production
+    allow_origins=[
+        "https://ai-resume-roaster-iota.vercel.app",
+    ],
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
@@ -78,32 +80,43 @@ Resume Score:
 Job Match Score:
 <number out of 100>
 
-Roast:
-<funny but light roast>
+Match Summary:
+<2-3 sentence realistic summary of how well the resume fits the job>
 
-Professional Feedback:
-- <point 1>
-- <point 2>
-- <point 3>
-
-Top Strengths:
-- <strength 1>
-- <strength 2>
+Matched Skills:
+- <matched skill 1>
+- <matched skill 2>
+- <matched skill 3>
+- <matched skill 4>
 
 Missing Skills:
 - <missing skill 1>
 - <missing skill 2>
 - <missing skill 3>
 
-Match Summary:
-<2-3 sentence realistic summary of how well the resume fits the job>
+Roast:
+<funny but light roast>
+
+Key Improvements:
+- <improvement 1>
+- <improvement 2>
+- <improvement 3>
+
+Weak Areas:
+- <weak area 1>
+- <weak area 2>
+
+Top Strengths:
+- <strength 1>
+- <strength 2>
+- <strength 3>
 
 Rules:
 - Keep the roast playful, clever, and non-offensive.
 - Do not insult the person personally.
 - Focus only on the resume content and job fit.
-- Feedback must be practical and specific.
 - Scores must be realistic.
+- Use short bullet points for bullet sections.
 - Do not add any extra headings.
 - Do not add introductory or closing text.
 
@@ -122,24 +135,47 @@ Analyze the following resume and respond in exactly this format:
 Resume Score:
 <number out of 100>
 
+Job Match Score:
+N/A
+
+Match Summary:
+<2-3 sentence realistic summary of the resume quality>
+
+Matched Skills:
+- <matched skill 1>
+- <matched skill 2>
+- <matched skill 3>
+- <matched skill 4>
+
+Missing Skills:
+- <missing skill 1>
+- <missing skill 2>
+- <missing skill 3>
+
 Roast:
 <funny but light roast>
 
-Professional Feedback:
-- <point 1>
-- <point 2>
-- <point 3>
+Key Improvements:
+- <improvement 1>
+- <improvement 2>
+- <improvement 3>
+
+Weak Areas:
+- <weak area 1>
+- <weak area 2>
 
 Top Strengths:
 - <strength 1>
 - <strength 2>
+- <strength 3>
 
 Rules:
 - Keep the roast playful, clever, and non-offensive.
 - Do not insult the person personally.
 - Focus only on the resume content.
-- Feedback must be practical and specific.
 - Score must be realistic and based on clarity, impact, structure, and relevance.
+- Use short bullet points for bullet sections.
+- Set Job Match Score to N/A if no job description is provided.
 - Do not add any extra headings.
 - Do not add introductory or closing text.
 
