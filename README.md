@@ -37,23 +37,22 @@ It demonstrates both **software engineering** and **product thinking**.
 ## 🛠️ Tech Stack
 
 ### Frontend
-- React
-- Vite
-- Axios
-- CSS
+- Vanilla HTML, CSS, JavaScript
+- Served via Nginx in production
 
 ### Backend
 - FastAPI
 - Python
 - PyMuPDF
+- SQLAlchemy + PostgreSQL (stores analysis history)
 
 ### AI
-- Groq API
-- LLaMA 3.3 70B Versatile
+- Groq API (LLaMA 3.3 70B Versatile) for resume analysis
+- Ollama (local, self-hosted) for local LLM experimentation
 
 ### Deployment
-- Vercel for frontend
-- Render for backend
+- Fully containerized: Docker + Docker Compose
+- Traefik reverse proxy with HTTPS (self-signed for local/demo use)
 
 ## 📂 Project Structure
 
@@ -61,16 +60,22 @@ It demonstrates both **software engineering** and **product thinking**.
 TalentScope-ai/
 ├── backend/
 │   ├── main.py
+│   ├── database.py
+│   ├── models.py
 │   ├── requirements.txt
+│   ├── Dockerfile
 │   └── .env
 │
 ├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   └── App.css
-│   ├── package.json
-│   └── .env.local
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   ├── config.js
+│   ├── docker-entrypoint.sh
+│   ├── nginx.conf
+│   └── Dockerfile
 │
+├── docker-compose.yml
 ├── .gitignore
 └── README.md
 ```
@@ -92,7 +97,7 @@ TalentScope-ai/
    - Weak Areas
    - Top Strengths
 
-## 🚀 Run Locally
+## 🚀 Run Locally (Docker Compose)
 
 ### 1. Clone the repository
 
@@ -101,12 +106,7 @@ git clone https://github.com/Vilas2809/talentscope-ai.git
 cd TalentScope-ai
 ```
 
-### 2. Backend setup
-
-```bash
-cd backend
-python3 -m pip install -r requirements.txt
-```
+### 2. Configure the backend
 
 Create a `.env` file inside `backend/`:
 
@@ -114,54 +114,43 @@ Create a `.env` file inside `backend/`:
 GROQ_API_KEY=your_groq_api_key_here
 ```
 
-Run the backend:
+### 3. Start the full stack
 
 ```bash
-python3 -m uvicorn main:app --reload
+docker compose up -d --build
 ```
 
-### 3. Frontend setup
+This starts:
+- `db` — PostgreSQL (stores analysis history)
+- `backend` — FastAPI, published on `http://localhost:8001`
+- `frontend` — static site served by Nginx, published on `http://localhost:8090`
+- `traefik` — reverse proxy terminating HTTPS (self-signed cert) at `https://talentscope.localhost:8443` (frontend) and `https://api.talentscope.localhost:8443` (backend)
+- `ollama` — local LLM runtime on `http://localhost:11434`
 
-Open a new terminal:
+Pull and run a local model once Ollama is up:
 
 ```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Create a `.env.local` file inside `frontend/`:
-
-```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
+docker exec -it talentscope-ai-ollama-1 ollama pull llama3.2:3b
+docker exec -it talentscope-ai-ollama-1 ollama run llama3.2:3b
 ```
 
 ## 🌍 Deployment
 
-### Frontend
-Deployed on Vercel:
-- https://talentscope-ai-vilas2809s-projects.vercel.app/
-
-### Backend
-Deployed on Render.
+Fully containerized via Docker Compose, fronted by Traefik for HTTPS. Point `docker-compose.yml`'s Traefik labels at a real domain (and swap the self-signed cert for a Let's Encrypt resolver) to deploy on a real server or a platform like Coolify.
 
 ## 🔐 Environment Variables
 
 ### Backend
 ```env
 GROQ_API_KEY=your_groq_api_key_here
+DATABASE_URL=postgresql+psycopg2://talentscope:talentscope@db:5432/talentscope
 ```
 
 ### Frontend
 ```env
-VITE_API_BASE_URL=http://127.0.0.1:8000
+API_BASE_URL=https://api.talentscope.localhost:8443
 ```
-
-For production, set:
-
-```env
-VITE_API_BASE_URL=https://your-render-backend-url.onrender.com
-```
+Injected into `config.js` at container startup (see `frontend/docker-entrypoint.sh`).
 
 ## 📸 Example Output
 

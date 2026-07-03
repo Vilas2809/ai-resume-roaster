@@ -2,8 +2,12 @@ import os
 import fitz
 from dotenv import load_dotenv
 from groq import Groq
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import Depends, FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
+from database import Base, engine, get_db
+from models import Analysis
 
 load_dotenv()
 
@@ -13,12 +17,20 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://ai-resume-roaster-iota.vercel.app",
+        "https://talentscope.localhost:8443",
+        "http://localhost:8090",
     ],
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
+
 
 api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
@@ -47,10 +59,26 @@ def home():
     return {"message": "Groq Resume Roaster backend is running"}
 
 
+@app.get("/history")
+def get_history(db: Session = Depends(get_db)):
+    records = db.query(Analysis).order_by(Analysis.created_at.desc()).limit(50).all()
+    return [
+        {
+            "id": r.id,
+            "filename": r.filename,
+            "job_description": r.job_description,
+            "result": r.result,
+            "created_at": r.created_at.isoformat(),
+        }
+        for r in records
+    ]
+
+
 @app.post("/analyze")
 async def analyze_resume(
     file: UploadFile = File(...),
-    job_description: str = Form("")
+    job_description: str = Form(""),
+    db: Session = Depends(get_db),
 ):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Please upload a valid PDF resume")
@@ -200,6 +228,15 @@ Resume:
         )
 
         result = response.choices[0].message.content
+
+        db.add(
+            Analysis(
+                filename=file.filename,
+                job_description=job_description or None,
+                result=result,
+            )
+        )
+        db.commit()
 
         return {
             "filename": file.filename,

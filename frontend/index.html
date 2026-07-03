@@ -4,10 +4,101 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>TalentScope AI</title>
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div class="app">
+      <div class="container">
+        <div class="title">
+          <h1>TalentScope AI</h1>
+          <p class="feature-tag">🔥 Resume Roaster -- Resume Intelligence Platform</p>
+          <p class="subtitle">Actionable insights. Smart feedback. Real career impact.</p>
+        </div>
+
+        <input id="resume-upload" type="file" accept=".pdf" />
+
+        <textarea id="job-description" placeholder="Paste the job description here for match analysis..." rows="8"></textarea>
+
+        <div class="action-row">
+          <button id="analyze-btn">Upload &amp; Analyze</button>
+          <button id="copy-btn" class="secondary-btn hidden">Copy Results</button>
+          <button id="clear-btn" class="secondary-btn hidden">Clear</button>
+        </div>
+
+        <div id="loading-box" class="loading-box hidden">
+          <div class="spinner"></div>
+          <p id="loading-text" class="loading-text">Analyzing...</p>
+        </div>
+
+        <p id="error" class="error hidden"></p>
+
+        <div id="result" class="result hidden">
+          <div class="score-grid">
+            <div class="card score-card">
+              <h2>📊 Resume Score</h2>
+              <div class="score-circle">
+                <span id="resume-score">0</span>
+              </div>
+              <div class="score-bar">
+                <div id="resume-score-fill" class="score-fill"></div>
+              </div>
+            </div>
+
+            <div class="card score-card">
+              <h2>🎯 Job Match</h2>
+              <div class="score-circle match-circle">
+                <span id="job-match-score">N/A</span>
+              </div>
+              <div class="score-bar">
+                <div id="job-match-score-fill" class="score-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="summary-card" class="card summary-card hidden">
+            <h2>🧠 Match Summary</h2>
+            <p id="match-summary"></p>
+          </div>
+
+          <div class="skill-grid">
+            <div id="matched-card" class="card skills-card matched-card hidden">
+              <h2>✅ Matched Skills</h2>
+              <div id="matched-skills" class="tag-wrap"></div>
+            </div>
+
+            <div id="missing-card" class="card skills-card missing-card hidden">
+              <h2>❌ Missing Skills</h2>
+              <div id="missing-skills" class="tag-wrap"></div>
+            </div>
+          </div>
+
+          <div id="roast-card" class="card roast hidden">
+            <h2>🔥 Roast</h2>
+            <p id="roast"></p>
+          </div>
+
+          <div class="insight-grid">
+            <div id="improvements-card" class="card feedback hidden">
+              <h2>📌 Key Improvements</h2>
+              <ul id="key-improvements"></ul>
+            </div>
+
+            <div id="weak-card" class="card weak-card hidden">
+              <h2>⚠️ Weak Areas</h2>
+              <ul id="weak-areas"></ul>
+            </div>
+          </div>
+
+          <div id="strengths-card" class="card strengths hidden">
+            <h2>💪 Top Strengths</h2>
+            <ul id="top-strengths"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="/app.js"></script>
   </body>
 </html>

@@ -4,3 +4,5 @@ python-multipart
 python-dotenv
 pymupdf
 groq
+sqlalchemy
+psycopg2-binary
